@@ -1,0 +1,16 @@
+{
+    "name": "labib/photo-engine",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Labib\\PhotoEngine\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "iamlabib",
+            "email": "info.labib@gmail.com"
+        }
+    ],
+    "require": {}
+}
