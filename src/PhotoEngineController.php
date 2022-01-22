@@ -32,8 +32,7 @@ class PhotoEngineController extends Controller
             $this->path = $request->src;
         }
         if(!isset($request->type)){
-            $this->placeholder(400, 300, 'No type given');
-            die('No type given');
+            $this->type = 'jpg';
         } else {
             $this->type = $request->type;
         }
@@ -45,6 +44,7 @@ class PhotoEngineController extends Controller
             return $imageExtention[0];
         }
         else {
+            $this->placeholder(400, 300, 'Unsupported format');
             die('Unsupported format');
         }
     }
