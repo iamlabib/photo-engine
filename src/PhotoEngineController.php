@@ -15,18 +15,32 @@ class PhotoEngineController extends Controller
     public $imageType;
     
     public function __construct(){
-        $this->height = 300;
-        $this->width = 400;  
-        $this->imageSource = 0;           
+        $this->height       =   300;
+        $this->width        =   400;  
+        $this->imageSource  =   0;           
     }
 
-    public function getParams($request){            
+    public function getParams($request){   
+        $width  =   400;
+        $height =   300;
+        if($request->has('width') || $request->has('height')){
+            if($request->width < 120){
+                $width = 120;
+            } else {
+                $width = $request->width;
+            }
+            if($request->height < 120){
+                $height = 120;
+            } else {
+                $height = $request->height;
+            }            
+        }          
         if(!isset($request->src)){
-            $this->placeholder(400, 300, 'No filepath given');
+            $this->placeholder($width, $height, 'No filepath given');
             die('No filepath given');
         } else {
             if(!file_exists($request->src)){
-                $this->placeholder(400, 300, 'File not found');
+                $this->placeholder($width, $height, 'File not found');
                 die('File not found');
             }
             $this->path = $request->src;
@@ -38,13 +52,27 @@ class PhotoEngineController extends Controller
         }
     }
 
-    public function getImageType(){
+    public function getImageType($request){
+        $width = 400;
+        $height = 300;
+        if($request->has('width') || $request->has('height')){
+            if($request->width < 120){
+                $width = 120;
+            } else {
+                $width = $request->width;
+            }
+            if($request->height < 120){
+                $height = 120;
+            } else {
+                $height = $request->height;
+            }            
+        }  
         $imageExtention = array_reverse(explode('.', $this->path));
         if(sizeof($imageExtention) > 0){
             return $imageExtention[0];
         }
         else {
-            $this->placeholder(400, 300, 'Unsupported format');
+            $this->placeholder($width, $height, 'Unsupported format');
             die('Unsupported format');
         }
     }
@@ -101,14 +129,22 @@ class PhotoEngineController extends Controller
         }
 
         $this->getParams($request);
-        $this->imageType = $this->getImageType();  
+        $this->imageType = $this->getImageType($request);  
         $this->setImageSource();     
 
         $x = imagesx($this->imageSource);
         $y = imagesy($this->imageSource);
         if($request->has('width') || $request->has('height')){
-            $this->width = $request->width;
-            $this->height = $request->height;
+            if($request->width < 120){
+                $this->width = 120;
+            } else {
+                $this->width = $request->width;
+            }
+            if($request->height < 120){
+                $this->height = 120;
+            } else {
+                $this->height = $request->height;
+            }            
         } 
         $source = imagecreatetruecolor($this->width, $this->height);
         imagecopyresampled($source, $this->imageSource, 0, 0, 0, 0, $this->width, $this->height, $x, $y);
